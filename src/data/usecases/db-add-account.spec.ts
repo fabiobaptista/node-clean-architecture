@@ -8,7 +8,7 @@ describe('DbAddAccount UseCase', () => {
   }
 
   const makeSut = (): SutTypes => {
-    class EncrypterStub {
+    class EncrypterStub implements Encrypter {
       async encrypt (value: string): Promise<string> {
         return await new Promise(resolve => resolve('hashed_password'))
       }
@@ -32,5 +32,19 @@ describe('DbAddAccount UseCase', () => {
     }
     await sut.add(accountData)
     expect(encryptSpy).toHaveBeenCalledWith(password)
+  })
+
+  test('should throws if Encrypter throws', async () => {
+    const { sut, encrypterStub } = makeSut()
+    jest.spyOn(encrypterStub, 'encrypt')
+      .mockImplementationOnce(() => { throw new Error() })
+    const password = 'valid_password'
+    const accountData = {
+      name: 'valid_name',
+      email: 'valid_email',
+      password
+    }
+    const promise = sut.add(accountData)
+    await expect(promise).rejects.toThrow()
   })
 })
