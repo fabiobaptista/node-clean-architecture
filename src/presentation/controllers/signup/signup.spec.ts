@@ -15,12 +15,6 @@ const makeEmailValidator = (): EmailValidator => {
 const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
     async add (account: AddAccountModel): Promise<AccountModel> {
-      // const fakeAccount = {
-      //   id: 'valid_id',
-      //   name: 'valid_name',
-      //   email: 'valid@email.com',
-      //   password: 'valid_password'
-      // }
       return await new Promise(resolve => resolve({ id: 'valid_id', ...account }))
     }
   }
